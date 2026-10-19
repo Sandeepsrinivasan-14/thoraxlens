@@ -1,9 +1,8 @@
-"""Build outputs/splits.csv: labels, patient-level train/val/test split, image paths.
+"""Build outputs/splits.csv: labels and patient-level train/val/test split (image locations come from the config).
 
 Test set = official test_list.txt. Train/val = train_val_list.txt, split by PATIENT so
 no patient appears in both train and val.
 """
-from pathlib import Path
 
 import numpy as np
 import pandas as pd
@@ -49,7 +48,6 @@ def main():
     assert not (set(tv["patient_id"]) & set(te["patient_id"])), "patient leakage across splits"
 
     out = pd.concat([tv, te], ignore_index=True)
-    out["path"] = out["image"].map(lambda n: str(Path(d["images_dir"]) / n))
 
     OUTPUTS.mkdir(exist_ok=True)
     out.to_csv(OUTPUTS / "splits.csv", index=False)

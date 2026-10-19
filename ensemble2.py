@@ -19,6 +19,7 @@ import torch
 
 import common
 from common import DISEASES, OUTPUTS, cache_batches, per_class_auc, predict
+from data_paths import read_splits
 
 MODES = ["none", "flip", "scale", "flipscale"]
 PRED = OUTPUTS / "preds"
@@ -96,7 +97,7 @@ def fit_weights(yv, pvs, step=0.05):
 
 def main(specs):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    df = pd.read_csv(OUTPUTS / "splits.csv")
+    df = read_splits()
     frames = {"val": df[df["split"] == "val"], "test": df[df["split"] == "test"]}
     res = {s: model_preds(s, frames, device) for s in specs}
     yv, yt = res[specs[0]]["val"][0], res[specs[0]]["test"][0]

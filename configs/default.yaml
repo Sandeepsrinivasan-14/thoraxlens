@@ -1,10 +1,12 @@
 seed: 42
 
 data:
-  metadata_csv: C:/Users/sndps/Downloads/Data_Entry_2017_v2020.csv
-  images_dir: C:/Users/sndps/Downloads/ChestXray-NIHCC/ChestXray14_all/images
-  train_val_list: C:/Users/sndps/Downloads/train_val_list.txt
-  test_list: C:/Users/sndps/Downloads/test_list.txt
+  # Repo-relative defaults. Put your real locations in configs/local.yaml (git-ignored); see
+  # configs/local.example.yaml. Absolute paths (C:/... or /...) are used as written.
+  metadata_csv: data/Data_Entry_2017_v2020.csv
+  images_dir: data/images
+  train_val_list: data/train_val_list.txt
+  test_list: data/test_list.txt
   val_fraction: 0.1   # fraction of train/val PATIENTS held out for validation
   image_size: 224
 

@@ -4,7 +4,7 @@ Last updated: 2026-10-16. Status: COMPLETE. Improvement plan finished; best = 5-
 
 ## 1. Goal
 Build a complete multi-label chest X-ray classifier for the NIH ChestX-ray14 dataset from scratch (no external source code), in
-`C:\Users\sndps\Downloads\ChestXray-NIHCC\pipeline`. Requirements from the user:
+`<repo root>`. Requirements from the user:
 - Train fast on the full GPU.
 - Training must be resumable after shutdown/offline and auto-start at logon.
 - Report epoch times, validation AUROC and test AUROC.
@@ -13,9 +13,9 @@ Build a complete multi-label chest X-ray classifier for the NIH ChestX-ray14 dat
 ## 2. Dataset
 - 112,120 frontal chest X-rays, 14 disease labels (Atelectasis, Cardiomegaly, Effusion, Infiltration, Mass, Nodule, Pneumonia, Pneumothorax, Consolidation, Edema, Emphysema, Fibrosis, Pleural_Thickening, Hernia) + "No Finding".
 - Multi-label; strong class imbalance (Hernia only 86 test positives).
-- Images: `C:\Users\sndps\Downloads\ChestXray-NIHCC\ChestXray14_all\images`
-- Metadata: `C:\Users\sndps\Downloads\Data_Entry_2017_v2020.csv`
-- Official lists: `C:\Users\sndps\Downloads\train_val_list.txt`, `test_list.txt` (images and metadata live in different folders).
+- Images: `<data dir>\images`
+- Metadata: `<data dir>\Data_Entry_2017_v2020.csv`
+- Official lists: `<data dir>\train_val_list.txt`, `test_list.txt` (images and metadata live in different folders).
 - Splits (patient-level, no leakage): train 77,724 / val 8,800 / test 25,596 (val = 10% of train/val patients).
 - Quality findings: 519 images are RGBA (known anomaly, handled by converting to grayscale); some age=0 rows; all images 1024x1024. Full integrity check of all 112,120 images passed (`outputs/integrity_full.log`).
 
@@ -91,7 +91,7 @@ Atelectasis 0.7606 (3279), Cardiomegaly 0.8939 (1069), Effusion 0.8217 (4658), I
 - Nothing further is required for the baseline project (optional improvements: section 13). The other project's tts training may need relaunching on its own side.
 
 ## 11. Environment
-Windows 11, PowerShell/Git Bash, 4 GB GPU, low free RAM, Python venv with PyTorch; user email sndpsrinivasan@gmail.com. Claude memory notes: `C:\Users\sndps\.claude\projects\c--Users-sndps-Downloads-ChestXray-NIHCC\memory\` (dataset_layout, training_results, dataset_quality_findings).
+Windows 11, PowerShell/Git Bash, 4 GB GPU, low free RAM, Python venv with PyTorch; user email sndpsrinivasan@gmail.com. Claude memory notes: `<local notes folder>` (dataset_layout, training_results, dataset_quality_findings).
 
 ## 12. Additional architectures and ensemble (added later)
 Select architecture with env var `CXR_ARCH` (default densenet121); each arch has its own `outputs/checkpoints_<arch>/`, `train_log_<arch>.csv`, `test_auroc_<arch>.csv`. Training resumes from `last.pt`.
@@ -117,7 +117,7 @@ Trained models and files (all under `pipeline/outputs/`):
 | Ensemble | - | `test_auroc_ensemble.csv` |
 `best.pt` = best-val weights (used for testing); `last.pt` = last epoch (used for resuming). Logs: `train_stdout_coatnet.log`, `train_stdout_coatnet2.log` (resumed after the first CoAtNet process died silently at epoch 4 step ~1500; relaunching with the same `CXR_ARCH` resumed from the epoch-3 `last.pt`).
 All 224 px runs: 4 epochs, batch 32, ~13 min/epoch (CoAtNet epoch 4 took 805 s).
-Python: `C:\Users\sndps\AppData\Local\Programs\Python\Python311\python.exe`, run from the `pipeline` dir.
+Python: `<python>`, run from the `pipeline` dir.
 
 ## 13. Possible improvements and the 6-hour plan (decided 2026-10-13; ALL STEPS DONE 2026-10-16)
 Analysis: val AUROC ~0.84 but test ~0.81 (test set is larger/harder). Models are likely under-trained (4 epochs) and 224 px loses detail for small findings (nodule, mass, fibrosis, pneumonia). Published results on this dataset are ~0.83-0.85 (512 px, big ensembles); NIH labels are NLP-mined and noisy, which caps the ceiling.

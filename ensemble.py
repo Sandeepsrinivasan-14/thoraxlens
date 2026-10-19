@@ -11,6 +11,7 @@ import torch
 
 import common
 from common import CACHE_PATH, DISEASES, OUTPUTS, cache_batches, load_config, per_class_auc, predict
+from data_paths import read_splits
 
 
 def predictions(arch, test_df, bs, device):
@@ -28,7 +29,7 @@ def predictions(arch, test_df, bs, device):
 def main(archs):
     cfg = load_config()
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    df = pd.read_csv(OUTPUTS / "splits.csv")
+    df = read_splits()
     test_df = df[df["split"] == "test"]
     ys, ps = None, []
     for a in archs:

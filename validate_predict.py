@@ -6,6 +6,7 @@ import numpy as np
 import pandas as pd
 
 from common import DISEASES, OUTPUTS
+from data_paths import read_splits
 
 N = 64
 PRED = OUTPUTS / "preds"
@@ -13,7 +14,7 @@ PARTS = [("_coatnet_0_rw_224.sw_in1k_test_scale.npz", 0.05),
          ("_320_test_scale.npz", 0.30),
          ("_convnext_tiny.fb_in22k_ft_in1k_320_test_flipscale.npz", 0.65)]
 
-df = pd.read_csv(OUTPUTS / "splits.csv")
+df = read_splits()
 test = df[df["split"] == "test"].reset_index(drop=True)
 idx = np.sort(np.random.default_rng(0).choice(len(test), N, replace=False))
 paths = test["path"].iloc[idx].tolist()

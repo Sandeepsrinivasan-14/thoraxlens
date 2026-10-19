@@ -39,9 +39,7 @@ DISEASES = [
 ]
 
 
-def load_config(path=ROOT / "configs" / "default.yaml"):
-    with open(path) as f:
-        return yaml.safe_load(f)
+from data_paths import load_config, read_splits  # noqa: E402,F401  (re-exported for the scripts)
 
 
 def read_list(path):

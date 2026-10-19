@@ -7,6 +7,7 @@ import torch
 
 from common import (CACHE_PATH, CKPT_PATH, DISEASES, OUTPUTS, TAG, build_model, cache_batches,
                     load_config, per_class_auc, predict)
+from data_paths import read_splits
 
 
 def main():
@@ -20,7 +21,7 @@ def main():
     model.load_state_dict(ckpt["model"])
     print(f"loaded epoch {ckpt['epoch']} (val mean AUROC {ckpt['val_mean_auc']:.4f})")
 
-    df = pd.read_csv(OUTPUTS / "splits.csv")
+    df = read_splits()
     test_df = df[df["split"] == "test"]  # keep index: it is the cache row
     batches = cache_batches(CACHE_PATH, test_df, 32, shuffle=False)
     y, p = predict(model, batches, device, tta=os.environ.get("CXR_TTA", "none"))

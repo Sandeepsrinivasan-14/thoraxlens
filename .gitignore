@@ -8,3 +8,6 @@ outputs/images_*.npy
 outputs/**/last.pt
 outputs/**/last_final.pt
 ui/_shots/
+# machine-specific data locations and local copies of the dataset
+configs/local.yaml
+/data/

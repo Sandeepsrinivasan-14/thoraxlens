@@ -12,3 +12,20 @@ Research use only; not a medical device.
 
 Not included (too large, rebuildable): the NIH images, `outputs/images_*.npy` caches, and `last.pt` resume states.
 Model checkpoints (`best.pt`) are stored with Git LFS.
+
+![ThoraxLens web app](ui/screenshots/analyze-dark.png)
+
+## Setup
+
+```
+pip install -r requirements.txt
+cp configs/local.example.yaml configs/local.yaml   # then edit it: where your NIH ChestX-ray14 files are
+```
+
+`configs/local.yaml` is git-ignored, so no machine-specific paths are committed. `outputs/splits.csv` stores image
+file names only; full paths are built from `images_dir` at run time. Tests: `pip install pytest && pytest tests`.
+
+## License
+
+Code is released under the [MIT License](LICENSE). The NIH ChestX-ray14 dataset is distributed by the NIH Clinical
+Center under its own terms and is not part of this license.

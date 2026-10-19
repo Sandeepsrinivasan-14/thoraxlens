@@ -11,7 +11,8 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import average_precision_score, brier_score_loss, roc_auc_score
 
 import ensemble2
-from common import DISEASES, OUTPUTS
+from common import DISEASES, OUTPUTS, load_config
+from data_paths import read_splits
 
 P = OUTPUTS / "preds"
 OUT = OUTPUTS / "validation"
@@ -41,7 +42,7 @@ def fast_auc(y, p):
     return ensemble2.mean_auc(y, p)
 
 
-df = pd.read_csv(OUTPUTS / "splits.csv")
+df = read_splits()
 test = df[df["split"] == "test"].reset_index(drop=True)
 val = df[df["split"] == "val"].reset_index(drop=True)
 
@@ -52,7 +53,7 @@ say(f"patients train/val/test: {len(pat['train'])}/{len(pat['val'])}/{len(pat['t
     f"overlaps train-val {len(pat['train'] & pat['val'])}, train-test {len(pat['train'] & pat['test'])}, "
     f"val-test {len(pat['val'] & pat['test'])}")
 img = {s: set(df[df.split == s].image) for s in ("train", "val", "test")}
-tl = {l.strip() for l in open(r"C:/Users/sndps/Downloads/test_list.txt") if l.strip()}
+tl = {l.strip() for l in open(load_config()["data"]["test_list"]) if l.strip()}
 say(f"test images == official NIH test_list.txt: {img['test'] == tl} ({len(tl)} images); "
     f"duplicate image ids in splits: {df.image.duplicated().sum()}")
 

@@ -1,0 +1,5 @@
+C:\Users\sndps\Downloads\ChestXray-NIHCC\ChestXray14_all\images\00030206_015.png Cardiomegaly
+C:\Users\sndps\Downloads\ChestXray-NIHCC\ChestXray14_all\images\00018860_028.png Pneumothorax
+C:\Users\sndps\Downloads\ChestXray-NIHCC\ChestXray14_all\images\00029469_018.png Mass
+C:\Users\sndps\Downloads\ChestXray-NIHCC\ChestXray14_all\images\00015072_011.png Pneumonia
+C:\Users\sndps\Downloads\ChestXray-NIHCC\ChestXray14_all\images\00021201_070.png Edema

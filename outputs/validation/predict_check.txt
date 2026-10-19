@@ -1,0 +1,4 @@
+predict.py vs cached ensemble on 64 random test images
+max abs diff 0.00007  mean abs diff 0.000012
+max |diff| relative to prob range: ref min 0.0016 max 0.9962
+rank agreement (Spearman, per image over 14 classes) min 1.0000

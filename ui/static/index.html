@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ThoraxLens · chest X-ray finding scores</title>
+<meta name="description" content="Research prototype: an ensemble of three deep networks scores 14 thoracic findings on a chest X-ray.">
+<meta name="color-scheme" content="dark light">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%230b1620'/%3E%3Ccircle cx='16' cy='16' r='8' fill='none' stroke='%233ee0cf' stroke-width='2.4'/%3E%3Cpath d='M16 8v16M10 12c2 2 2 6 0 8M22 12c-2 2-2 6 0 8' stroke='%233ee0cf' stroke-width='1.6' fill='none' stroke-linecap='round'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="/static/app.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<div class="bg-glow" aria-hidden="true"></div>
+
+<header class="topbar" role="banner">
+  <div class="brand">
+    <svg class="logo" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="9" class="logo-bg"/><circle cx="16" cy="16" r="8" class="logo-ring"/><path d="M16 8v16M10 12c2 2 2 6 0 8M22 12c-2 2-2 6 0 8" class="logo-lungs"/></svg>
+    <div class="brand-text"><b>ThoraxLens</b><span>chest X-ray finding scores</span></div>
+  </div>
+  <nav class="tabs" role="tablist" aria-label="Sections">
+    <button role="tab" data-view="analyze" aria-selected="true"><i data-i="scan"></i>Analyze<kbd>1</kbd></button>
+    <button role="tab" data-view="performance"><i data-i="chart"></i>Performance<kbd>2</kbd></button>
+    <button role="tab" data-view="models"><i data-i="layers"></i>Models<kbd>3</kbd></button>
+    <button role="tab" data-view="validation"><i data-i="shield"></i>Validation<kbd>4</kbd></button>
+    <button role="tab" data-view="about"><i data-i="book"></i>About<kbd>5</kbd></button>
+  </nav>
+  <div class="top-actions">
+    <div class="status" id="status" title="Backend status"><span class="dot"></span><span id="status-text">connecting…</span></div>
+    <button class="icon-btn" id="btn-history" aria-label="History" title="History"><i data-i="clock"></i></button>
+    <button class="icon-btn" id="btn-help" aria-label="Keyboard shortcuts" title="Shortcuts (?)"><i data-i="keyboard"></i></button>
+    <button class="icon-btn" id="btn-theme" aria-label="Toggle theme" title="Toggle theme"><i data-i="moon"></i></button>
+  </div>
+</header>
+<div class="disclaimer" role="note"><i data-i="alert"></i><span><b>Research use only.</b> Not a medical device and not validated for clinical decisions. Scores are model outputs, not diagnoses. Images stay on this computer.</span></div>
+
+<main id="main">
+<!-- ============================ ANALYZE ============================ -->
+<section class="view" id="view-analyze">
+  <div class="analyze-grid">
+    <div class="col-viewer">
+      <div class="panel viewer-panel" id="viewer-panel">
+        <div class="panel-head">
+          <div class="title"><i data-i="scan"></i><h2>Study</h2><span class="chip" id="img-meta" hidden></span></div>
+          <div class="toolbar" id="viewer-tools" hidden>
+            <button class="tool" id="t-zoom-out" title="Zoom out (−)"><i data-i="minus"></i></button>
+            <span class="zoom-read" id="zoom-read">100%</span>
+            <button class="tool" id="t-zoom-in" title="Zoom in (+)"><i data-i="plus"></i></button>
+            <button class="tool" id="t-reset" title="Reset view (R)"><i data-i="fit"></i></button>
+            <span class="sep"></span>
+            <button class="tool toggle" id="t-invert" title="Invert (I)" aria-pressed="false"><i data-i="invert"></i></button>
+            <button class="tool toggle" id="t-heat" title="Heatmap (H)" aria-pressed="false" disabled><i data-i="flame"></i></button>
+            <button class="tool" id="t-new" title="New study (U)"><i data-i="upload"></i></button>
+          </div>
+        </div>
+
+        <div class="dropzone" id="dropzone" tabindex="0" role="button" aria-label="Choose or drop a chest X-ray image">
+          <div class="dz-inner">
+            <div class="dz-icon"><svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="26" class="dz-ring"/><circle cx="32" cy="32" r="26" class="dz-sweep"/><path d="M32 16v32M20 24c5 4 5 12 0 16M44 24c-5 4-5 12 0 16" class="dz-lungs"/></svg></div>
+            <h3>Drop a chest X-ray here</h3>
+            <p>PNG or JPEG, frontal view. Paste with <kbd>Ctrl</kbd>+<kbd>V</kbd> or <button class="link" id="dz-browse">browse files</button>.</p>
+            <div class="dz-hint">DICOM is not supported. Nothing is uploaded off this machine.</div>
+          </div>
+        </div>
+
+        <div class="stage" id="stage" hidden>
+          <div class="stage-img" id="stage-img">
+            <img id="xray" alt="Uploaded chest X-ray" draggable="false">
+            <img id="heat" alt="" draggable="false" hidden>
+            <div class="scan-line" id="scan-line" hidden></div>
+          </div>
+          <div class="stage-hud tl" id="hud-tl"></div>
+          <div class="stage-hud br" id="hud-heat" hidden>
+            <label>Heatmap<input type="range" id="heat-op" min="10" max="100" value="70" aria-label="Heatmap opacity"></label>
+          </div>
+          <div class="stage-hud bl" id="hud-adj">
+            <label><i data-i="sun"></i><input type="range" id="adj-b" min="40" max="220" value="100" aria-label="Brightness"></label>
+            <label><i data-i="contrast"></i><input type="range" id="adj-c" min="40" max="260" value="100" aria-label="Contrast"></label>
+          </div>
+          <div class="stage-loading" id="stage-loading" hidden><div class="spinner"></div><span>Rendering heatmap…</span></div>
+        </div>
+        <input type="file" id="file" accept="image/png,image/jpeg,image/webp,image/bmp,image/tiff" hidden>
+
+        <div class="warnings" id="warnings" hidden></div>
+      </div>
+
+      <div class="panel samples-panel">
+        <div class="panel-head">
+          <div class="title"><i data-i="grid"></i><h2>Try a sample</h2><span class="chip">official NIH test split</span></div>
+          <label class="switch" title="Show the NIH label of each sample"><input type="checkbox" id="reveal"><span class="knob"></span><span class="sw-label">Reveal labels</span></label>
+        </div>
+        <div class="sample-strip" id="sample-strip" aria-label="Sample images"></div>
+        <p class="fine">Twelve randomly drawn frontal test images: nine with a single labelled finding and three labelled "No Finding". The models never trained on them.</p>
+      </div>
+    </div>
+
+    <div class="col-results">
+      <div class="panel results-panel" id="results-panel">
+        <div class="panel-head">
+          <div class="title"><i data-i="pulse"></i><h2>Findings</h2></div>
+          <div class="head-actions">
+            <div class="seg" id="seg-op" role="group" aria-label="Operating point">
+              <button data-op="balanced" aria-pressed="true" title="Threshold maximising sensitivity + specificity on validation">Balanced</button>
+              <button data-op="sensitive" aria-pressed="false" title="Threshold giving 90% sensitivity on validation">High sensitivity</button>
+            </div>
+            <div class="seg" id="seg-val" role="group" aria-label="Value shown">
+              <button data-val="cal" aria-pressed="true" title="Platt-calibrated risk (fitted on validation)">Risk %</button>
+              <button data-val="raw" aria-pressed="false" title="Raw ensemble score">Raw</button>
+            </div>
+          </div>
+        </div>
+
+        <ol class="stepper" id="stepper" aria-label="Analysis progress">
+          <li data-step="preprocess"><span class="s-dot"></span><b>Preprocess</b><em></em></li>
+          <li data-step="coatnet"><span class="s-dot"></span><b>CoAtNet-0</b><em></em></li>
+          <li data-step="densenet320"><span class="s-dot"></span><b>DenseNet121</b><em></em></li>
+          <li data-step="convnext320"><span class="s-dot"></span><b>ConvNeXt-Tiny</b><em></em></li>
+          <li data-step="blend"><span class="s-dot"></span><b>Blend</b><em></em></li>
+        </ol>
+
+        <div class="empty" id="results-empty">
+          <svg viewBox="0 0 120 80" aria-hidden="true"><rect x="2" y="2" width="116" height="76" rx="10" class="e-box"/><g class="e-bars"><rect x="16" y="16" width="70" height="7" rx="3.5"/><rect x="16" y="30" width="50" height="7" rx="3.5"/><rect x="16" y="44" width="84" height="7" rx="3.5"/><rect x="16" y="58" width="36" height="7" rx="3.5"/></g></svg>
+          <h3>No study yet</h3>
+          <p>Add an X-ray or pick a sample. Fourteen findings are scored by three networks and blended into one list.</p>
+        </div>
+
+        <div class="summary" id="summary" hidden></div>
+        <div class="list-tools" id="list-tools" hidden>
+          <label class="switch"><input type="checkbox" id="flag-only"><span class="knob"></span><span class="sw-label">Flagged only</span></label>
+          <label class="switch" title="Order by calibrated risk instead of by score relative to each finding's threshold"><input type="checkbox" id="sort-risk"><span class="knob"></span><span class="sw-label">Sort by risk</span></label>
+          <label class="switch"><input type="checkbox" id="by-model"><span class="knob"></span><span class="sw-label">Per-model scores</span></label>
+        </div>
+        <ul class="findings" id="findings" role="listbox" aria-label="Findings, highest score first"></ul>
+
+        <div class="detail" id="detail" hidden></div>
+
+        <div class="export" id="export" hidden>
+          <button class="btn" id="x-json"><i data-i="copy"></i>Copy JSON</button>
+          <button class="btn" id="x-csv"><i data-i="download"></i>CSV</button>
+          <button class="btn primary" id="x-print"><i data-i="print"></i>Print report</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ PERFORMANCE ============================ -->
+<section class="view" id="view-performance" hidden>
+  <div class="view-head"><div><h1>Performance on the held-out test set</h1><p>25,596 images from 2,797 patients the models never saw. Intervals are 95% bootstrap over patients.</p></div></div>
+  <div class="kpis" id="kpis"></div>
+  <div class="grid-2">
+    <div class="panel"><div class="panel-head"><div class="title"><h2>Per-finding AUROC</h2></div><div class="seg" id="seg-sort"><button data-sort="auc" aria-pressed="true">By AUROC</button><button data-sort="prev" aria-pressed="false">By prevalence</button></div></div><div id="ch-forest" class="chart"></div></div>
+    <div class="panel"><div class="panel-head"><div class="title"><h2>ROC and precision-recall</h2></div><div class="seg" id="seg-curve"><button data-curve="roc" aria-pressed="true">ROC</button><button data-curve="pr" aria-pressed="false">PR</button></div></div><div class="chips" id="chips-curve"></div><div id="ch-curve" class="chart"></div></div>
+  </div>
+  <div class="grid-2">
+    <div class="panel"><div class="panel-head"><div class="title"><h2>Calibration</h2></div><div class="seg" id="seg-rel"><button data-rel="raw" aria-pressed="true">Raw scores</button><button data-rel="cal" aria-pressed="false">After Platt scaling</button></div></div><div class="chips" id="chips-rel"></div><div id="ch-rel" class="chart"></div><p class="fine" id="rel-note"></p></div>
+    <div class="panel"><div class="panel-head"><div class="title"><h2>Operating points</h2></div><div class="seg" id="seg-opt"><button data-op="balanced" aria-pressed="true">Balanced</button><button data-op="sensitive" aria-pressed="false">High sensitivity</button></div></div><div id="op-table" class="table-wrap"></div><p class="fine">Thresholds were chosen on the validation set only, then applied to the test set. Precision (PPV) depends on prevalence: rare findings flag mostly false alarms.</p></div>
+  </div>
+  <div class="grid-2">
+    <div class="panel"><div class="panel-head"><div class="title"><h2>Subgroups</h2></div></div><div id="ch-sub" class="chart"></div><p class="fine">Mean AUROC over 14 findings. AP films are mostly portable studies of sicker inpatients. Reasons for the age gap were not investigated.</p></div>
+    <div class="panel"><div class="panel-head"><div class="title"><h2>Confusion at the operating point</h2></div></div><div class="chips" id="chips-cm"></div><div id="ch-cm" class="chart"></div></div>
+  </div>
+</section>
+
+<!-- ============================ MODELS ============================ -->
+<section class="view" id="view-models" hidden>
+  <div class="view-head"><div><h1>Models and how the ensemble is built</h1><p>Three networks carry weight; two older 224 px models were retired by the validation-fitted blend.</p></div></div>
+  <div class="model-cards" id="model-cards"></div>
+  <div class="grid-2">
+    <div class="panel"><div class="panel-head"><div class="title"><h2>What moved the score</h2></div></div><div id="ch-ablation" class="chart"></div><p class="fine">Test mean AUROC at each step. Resolution did most of the work; fitted weights added a small, reliable amount.</p></div>
+    <div class="panel"><div class="panel-head"><div class="title"><h2>Training curves</h2></div><div class="seg" id="seg-train"><button data-t="val" aria-pressed="true">Validation AUROC</button><button data-t="loss" aria-pressed="false">Train loss</button></div></div><div class="chips" id="chips-train"></div><div id="ch-train" class="chart"></div></div>
+  </div>
+  <div class="grid-2">
+    <div class="panel"><div class="panel-head"><div class="title"><h2>Seed repeat</h2></div></div><div id="ch-seed" class="chart"></div><p class="fine">The two 320 px models were retrained with another random seed on the same split. Run-to-run spread is about 0.001 to 0.003 per model and 0.0015 for the ensemble.</p></div>
+    <div class="panel"><div class="panel-head"><div class="title"><h2>Recipe</h2></div></div>
+      <dl class="kv">
+        <div><dt>Loss</dt><dd>BCE with positive weights, capped at 50</dd></div>
+        <div><dt>Optimiser</dt><dd>AdamW, lr 1e-4, weight decay 1e-5, cosine</dd></div>
+        <div><dt>Precision</dt><dd>Mixed (fp16), micro-batch 16 × 2 accumulation</dd></div>
+        <div><dt>EMA</dt><dd>0.999 on the 320 px models; used for validation and saving</dd></div>
+        <div><dt>Augmentation</dt><dd>GPU affine: ±5°, 3% shift, 0.95–1.05 scale; no flips</dd></div>
+        <div><dt>TTA</dt><dd>Mode per model picked on validation (scale or flip+scale)</dd></div>
+        <div><dt>Blend</dt><dd>Greedy simplex search on validation, step 0.05</dd></div>
+        <div><dt>Hardware</dt><dd>One 4 GB laptop GPU</dd></div>
+      </dl>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ VALIDATION ============================ -->
+<section class="view" id="view-validation" hidden>
+  <div class="view-head"><div><h1>Validation record</h1><p>Every choice was made on validation data; the test set was only scored. Checks ran after the models were frozen.</p></div></div>
+  <div class="grid-2">
+    <div class="panel"><div class="panel-head"><div class="title"><h2>Checks</h2></div></div><ul class="checks" id="checks"></ul></div>
+    <div class="panel"><div class="panel-head"><div class="title"><h2>Gain over other systems</h2></div></div><div id="ch-paired" class="chart"></div><p class="fine">Paired bootstrap on the same resampled patients, mean AUROC difference of the final ensemble. All intervals exclude zero.</p></div>
+  </div>
+  <div class="panel callout"><i data-i="alert"></i><div><h3>Known limits</h3><ul>
+    <li><b>Scores are not probabilities.</b> Training weighted positives up to 50×, so raw scores sit far above prevalence (mean calibration error 0.30). Platt scaling fitted on validation brings it to 0.009 and leaves AUROC unchanged.</li>
+    <li><b>One hospital, no outside test.</b> Generalisation to other scanners and populations is unknown.</li>
+    <li><b>Labels were mined from reports,</b> not read from images, so some are wrong; networks can also learn shortcuts such as tubes and markers.</li>
+    <li><b>The test set was scored for several intermediate systems</b> during development. No choice was made from those numbers, but it was not a strictly single test run.</li>
+  </ul></div></div>
+</section>
+
+<!-- ============================ ABOUT ============================ -->
+<section class="view" id="view-about" hidden>
+  <div class="view-head"><div><h1>About ThoraxLens</h1><p>A research prototype that scores 14 thoracic findings on a frontal chest radiograph.</p></div></div>
+  <div class="grid-2">
+    <div class="panel"><div class="panel-head"><div class="title"><h2>Data</h2></div></div><div id="ch-split" class="chart"></div><div id="ch-demo" class="chart"></div></div>
+    <div class="panel"><div class="panel-head"><div class="title"><h2>Pipeline</h2></div></div><div id="pipeline"></div></div>
+  </div>
+  <div class="panel"><div class="panel-head"><div class="title"><h2>Findings glossary</h2></div></div><div id="glossary" class="glossary"></div></div>
+  <div class="panel callout"><i data-i="info"></i><div><h3>Intended role</h3><p>Decision support research: worklist prioritisation or a second look, with a radiologist responsible for every read. Before any clinical use it needs external validation, a reader study, thresholds and calibration set for the target population, and the regulatory route for the intended market.</p></div></div>
+</section>
+</main>
+
+<aside class="drawer" id="drawer" aria-hidden="true" aria-label="History">
+  <div class="drawer-head"><h2>History</h2><button class="icon-btn" id="drawer-close" aria-label="Close"><i data-i="x"></i></button></div>
+  <div class="drawer-body" id="history-list"></div>
+  <div class="drawer-foot"><button class="btn" id="history-clear"><i data-i="trash"></i>Clear history</button></div>
+</aside>
+<div class="scrim" id="scrim" hidden></div>
+
+<dialog id="help" aria-label="Keyboard shortcuts">
+  <div class="dlg-head"><h2>Keyboard shortcuts</h2><button class="icon-btn" id="help-close" aria-label="Close"><i data-i="x"></i></button></div>
+  <dl class="keys">
+    <div><dt><kbd>1</kbd>–<kbd>5</kbd></dt><dd>Switch section</dd></div>
+    <div><dt><kbd>U</kbd></dt><dd>Open an image</dd></div>
+    <div><dt><kbd>↑</kbd> <kbd>↓</kbd></dt><dd>Select finding</dd></div>
+    <div><dt><kbd>H</kbd></dt><dd>Toggle heatmap</dd></div>
+    <div><dt><kbd>I</kbd></dt><dd>Invert image</dd></div>
+    <div><dt><kbd>+</kbd> <kbd>−</kbd> <kbd>R</kbd></dt><dd>Zoom in, out, reset</dd></div>
+    <div><dt><kbd>B</kbd></dt><dd>Balanced / high-sensitivity threshold</dd></div>
+    <div><dt><kbd>T</kbd></dt><dd>Toggle theme</dd></div>
+    <div><dt><kbd>Ctrl</kbd>+<kbd>V</kbd></dt><dd>Paste an image</dd></div>
+    <div><dt><kbd>?</kbd></dt><dd>This help</dd></div>
+  </dl>
+</dialog>
+
+<div class="tooltip" id="tip" role="tooltip" hidden></div>
+<div class="toasts" id="toasts" aria-live="polite"></div>
+
+<script src="/static/app.js"></script>
+</body>
+</html>

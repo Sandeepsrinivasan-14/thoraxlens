@@ -1,0 +1,15 @@
+disease,auroc,n_positive
+Atelectasis,0.7606,3279
+Cardiomegaly,0.8939,1069
+Effusion,0.8217,4658
+Infiltration,0.6951,6112
+Mass,0.8223,1748
+Nodule,0.7476,1623
+Pneumonia,0.7128,555
+Pneumothorax,0.8581,2665
+Consolidation,0.745,1815
+Edema,0.8459,925
+Emphysema,0.9073,1093
+Fibrosis,0.8224,435
+Pleural_Thickening,0.7739,1143
+Hernia,0.9144,86

@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+*.tmp
+*.log
+*.err
+# rebuildable / resume-only artifacts
+outputs/images_*.npy
+outputs/**/last.pt
+outputs/**/last_final.pt
+ui/_shots/

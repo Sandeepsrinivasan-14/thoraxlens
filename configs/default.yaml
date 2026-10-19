@@ -1,0 +1,26 @@
+seed: 42
+
+data:
+  metadata_csv: C:/Users/sndps/Downloads/Data_Entry_2017_v2020.csv
+  images_dir: C:/Users/sndps/Downloads/ChestXray-NIHCC/ChestXray14_all/images
+  train_val_list: C:/Users/sndps/Downloads/train_val_list.txt
+  test_list: C:/Users/sndps/Downloads/test_list.txt
+  val_fraction: 0.1   # fraction of train/val PATIENTS held out for validation
+  image_size: 224
+
+train:
+  epochs: 4
+  batch_size: 32
+  lr: 0.0001
+  weight_decay: 0.00001
+  num_workers: 6
+  pretrained: true        # ImageNet weights for DenseNet121
+  class_weighted: true    # pos_weight in BCE loss to counter class imbalance
+  max_pos_weight: 50      # cap so rare classes (Hernia) do not dominate
+  train_subset: null      # set to e.g. 20000 for a quick smoke test
+
+explain:
+  cf_threshold: 0.5       # counterfactual aims to push disease probability below this
+  cf_steps: 300
+  cf_lr: 0.001
+  cf_l2: 0.001            # penalty on size of the edit

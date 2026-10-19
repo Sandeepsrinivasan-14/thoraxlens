@@ -1,0 +1,22 @@
+coatnet_0_rw_224.sw_in1k: TTA=scale val 0.8413 test 0.8088
+densenet121@320#7: TTA=flipscale val 0.8515 test 0.8216
+convnext_tiny.fb_in22k_ft_in1k@320#7: TTA=scale val 0.8552 test 0.8208
+uniform weights : val 0.8579 test 0.8267
+fitted weights {'coatnet_0_rw_224.sw_in1k': np.float64(0.13), 'densenet121@320#7': np.float64(0.38), 'convnext_tiny.fb_in22k_ft_in1k@320#7': np.float64(0.48)}: val 0.8589 test 0.8274
+FINAL (fitted weights, chosen on val): ensemble mean test AUROC 0.8274
+
+           disease  auroc
+       Atelectasis 0.7835
+      Cardiomegaly 0.9022
+          Effusion 0.8347
+      Infiltration 0.7109
+              Mass 0.8436
+            Nodule 0.7821
+         Pneumonia 0.7346
+      Pneumothorax 0.8807
+     Consolidation 0.7571
+             Edema 0.8570
+         Emphysema 0.9359
+          Fibrosis 0.8422
+Pleural_Thickening 0.7888
+            Hernia 0.9307

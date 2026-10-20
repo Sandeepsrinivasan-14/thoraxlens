@@ -9,7 +9,7 @@
   "sex": "F",
   "view": "PA",
   "image": "00027093_001.png",
-  "src": "C:\\Users\\sndps\\Downloads\\ChestXray-NIHCC\\ChestXray14_all\\images\\00027093_001.png"
+  "src": "00027093_001.png"
  },
  {
   "id": "s02",
@@ -21,7 +21,7 @@
   "sex": "M",
   "view": "PA",
   "image": "00007557_010.png",
-  "src": "C:\\Users\\sndps\\Downloads\\ChestXray-NIHCC\\ChestXray14_all\\images\\00007557_010.png"
+  "src": "00007557_010.png"
  },
  {
   "id": "s03",
@@ -33,7 +33,7 @@
   "sex": "F",
   "view": "PA",
   "image": "00000211_022.png",
-  "src": "C:\\Users\\sndps\\Downloads\\ChestXray-NIHCC\\ChestXray14_all\\images\\00000211_022.png"
+  "src": "00000211_022.png"
  },
  {
   "id": "s04",
@@ -45,7 +45,7 @@
   "sex": "M",
   "view": "PA",
   "image": "00017036_011.png",
-  "src": "C:\\Users\\sndps\\Downloads\\ChestXray-NIHCC\\ChestXray14_all\\images\\00017036_011.png"
+  "src": "00017036_011.png"
  },
  {
   "id": "s05",
@@ -57,7 +57,7 @@
   "sex": "F",
   "view": "PA",
   "image": "00012364_005.png",
-  "src": "C:\\Users\\sndps\\Downloads\\ChestXray-NIHCC\\ChestXray14_all\\images\\00012364_005.png"
+  "src": "00012364_005.png"
  },
  {
   "id": "s06",
@@ -69,7 +69,7 @@
   "sex": "F",
   "view": "PA",
   "image": "00014083_013.png",
-  "src": "C:\\Users\\sndps\\Downloads\\ChestXray-NIHCC\\ChestXray14_all\\images\\00014083_013.png"
+  "src": "00014083_013.png"
  },
  {
   "id": "s07",
@@ -81,7 +81,7 @@
   "sex": "F",
   "view": "PA",
   "image": "00001582_019.png",
-  "src": "C:\\Users\\sndps\\Downloads\\ChestXray-NIHCC\\ChestXray14_all\\images\\00001582_019.png"
+  "src": "00001582_019.png"
  },
  {
   "id": "s08",
@@ -93,7 +93,7 @@
   "sex": "M",
   "view": "PA",
   "image": "00011402_022.png",
-  "src": "C:\\Users\\sndps\\Downloads\\ChestXray-NIHCC\\ChestXray14_all\\images\\00011402_022.png"
+  "src": "00011402_022.png"
  },
  {
   "id": "s09",
@@ -105,7 +105,7 @@
   "sex": "F",
   "view": "PA",
   "image": "00018366_008.png",
-  "src": "C:\\Users\\sndps\\Downloads\\ChestXray-NIHCC\\ChestXray14_all\\images\\00018366_008.png"
+  "src": "00018366_008.png"
  },
  {
   "id": "s10",
@@ -115,7 +115,7 @@
   "sex": "F",
   "view": "PA",
   "image": "00014969_004.png",
-  "src": "C:\\Users\\sndps\\Downloads\\ChestXray-NIHCC\\ChestXray14_all\\images\\00014969_004.png"
+  "src": "00014969_004.png"
  },
  {
   "id": "s11",
@@ -125,7 +125,7 @@
   "sex": "M",
   "view": "PA",
   "image": "00029631_009.png",
-  "src": "C:\\Users\\sndps\\Downloads\\ChestXray-NIHCC\\ChestXray14_all\\images\\00029631_009.png"
+  "src": "00029631_009.png"
  },
  {
   "id": "s12",
@@ -135,6 +135,6 @@
   "sex": "M",
   "view": "PA",
   "image": "00029337_000.png",
-  "src": "C:\\Users\\sndps\\Downloads\\ChestXray-NIHCC\\ChestXray14_all\\images\\00029337_000.png"
+  "src": "00029337_000.png"
  }
 ]

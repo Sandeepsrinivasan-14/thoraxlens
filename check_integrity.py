@@ -13,6 +13,7 @@ import pandas as pd
 from PIL import Image
 
 from common import OUTPUTS
+from data_paths import read_splits
 
 
 def check(path):
@@ -33,7 +34,7 @@ def main():
     ap.add_argument("--workers", type=int, default=4)
     args = ap.parse_args()
 
-    df = pd.read_csv(OUTPUTS / "splits.csv")
+    df = read_splits()
     paths = df["path"].tolist()
     if args.sample:
         paths = df["path"].sample(args.sample, random_state=0).tolist()
@@ -41,7 +42,8 @@ def main():
     with Pool(args.workers) as pool:
         rows = list(pool.imap(check, paths, chunksize=64))
 
-    report = pd.DataFrame(rows, columns=["path", "status", "mode", "size"])
+    report = pd.DataFrame(rows, columns=["image", "status", "mode", "size"])
+    report["image"] = report["image"].map(os.path.basename)  # keep machine paths out of the report
     report.to_csv(OUTPUTS / "integrity_report.csv", index=False)
 
     print(f"checked: {len(report)}")

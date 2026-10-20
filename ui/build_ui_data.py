@@ -24,6 +24,7 @@ HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent
 sys.path.insert(0, str(ROOT))
 from common import DISEASES, OUTPUTS  # noqa: E402
+from data_paths import read_splits  # noqa: E402
 
 P = OUTPUTS / "preds"
 DATA = HERE / "data"
@@ -127,7 +128,7 @@ for m in re.finditer(r"^(sex=\w|view=\w+|age[<>= 0-9-]+?)\s+n=\s*(\d+)\s+mean AU
     sub.append({"group": m.group(1).strip(), "n": int(m.group(2)), "auc": float(m.group(3))})
 
 # ---------------------------------------------------------------- dataset stats
-df = pd.read_csv(OUTPUTS / "splits.csv")
+df = read_splits()
 age = pd.to_numeric(df["age"], errors="coerce")
 dstats = {
     "images": {s: int((df.split == s).sum()) for s in ("train", "val", "test")},
@@ -224,6 +225,6 @@ for k, row in enumerate(pick):
     labels = [d for d in DISEASES if row[d] == 1]
     samples.append({"id": sid, "file": f"/static/samples/{sid}.jpg", "labels": [nice(x) for x in labels],
                     "age": int(row.age), "sex": row.sex, "view": row["view"], "image": row.image,
-                    "src": str(row.path)})
+                    "src": str(row.image)})
 (DATA / "samples.json").write_text(json.dumps(samples, indent=1))
 print("samples:", len(samples))

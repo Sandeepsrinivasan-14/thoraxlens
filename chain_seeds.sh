@@ -1,7 +1,7 @@
 #!/bin/bash
 # Seed-repeat runs (seed 7) of the two 320 px models, same settings as the originals, own checkpoints/logs.
-cd /c/Users/sndps/Downloads/ChestXray-NIHCC/pipeline
-PY=/c/Users/sndps/AppData/Local/Programs/Python/Python311/python.exe
+cd "$(dirname "$0")"
+PY=${PY:-python}  # override with: PY=/path/to/python bash chain_seeds.sh
 export CXR_IMG=320 CXR_EMA=0.999 CXR_PIN=0 CXR_SEED=7
 run() {  # $1=arch $2=epochs $3=log
   for i in 1 2 3 4 5 6; do

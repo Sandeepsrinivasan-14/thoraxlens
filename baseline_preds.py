@@ -2,9 +2,10 @@
 import numpy as np, pandas as pd, torch
 import common
 from common import OUTPUTS, cache_batches, predict, per_class_auc
+from data_paths import read_splits
 
 device = torch.device("cuda")
-df = pd.read_csv(OUTPUTS / "splits.csv")
+df = read_splits()
 test = df[df["split"] == "test"]
 cache = OUTPUTS / "images_224.npy"
 for arch, tag in [("densenet121", ""), ("convnext_tiny.fb_in22k_ft_in1k", "_convnext_tiny.fb_in22k_ft_in1k"),

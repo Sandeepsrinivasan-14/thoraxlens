@@ -18,6 +18,7 @@ import torch.nn as nn
 import evaluate
 from common import (CACHE_PATH, CKPT_PATH, DISEASES, EMA, OUTPUTS, TAG, build_model, cache_batches,
                     gpu_batch, load_config, per_class_auc, predict)
+from data_paths import read_splits
 
 LAST_PATH = CKPT_PATH.parent / "last.pt"
 
@@ -50,7 +51,7 @@ def main():
     print("device:", device)
     torch.backends.cudnn.benchmark = True  # autotune conv kernels; ~13% faster here
 
-    df = pd.read_csv(OUTPUTS / "splits.csv")
+    df = read_splits()
     train_df = df[df["split"] == "train"]
     val_df = df[df["split"] == "val"]
     if t["train_subset"]:

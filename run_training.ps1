@@ -1,6 +1,6 @@
 # Launcher used by the scheduled task. Runs train.py (which resumes automatically)
 # and appends all output to outputs\train_stdout.log.
-$py = "C:\Users\sndps\AppData\Local\Programs\Python\Python311\python.exe"
+$py = if ($env:PYTHON) { $env:PYTHON } else { "python" }
 $here = Split-Path -Parent $MyInvocation.MyCommand.Path
 Set-Location $here
 New-Item -ItemType Directory -Force -Path "outputs" | Out-Null

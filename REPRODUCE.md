@@ -1,6 +1,8 @@
 # Reproducing ThoraxLens
 
-All commands run from the `pipeline` folder with `C:\Users\sndps\AppData\Local\Programs\Python\Python311\python.exe` (Python 3.11, torch 2.12 + cu130, timm 1.0.27).
+All commands run from the repository root with Python 3.11 (torch 2.12 + cu130, timm 1.0.27); install with `pip install -r requirements.txt`.
+
+**Where the data lives.** Nothing machine-specific is committed. Copy `configs/local.example.yaml` to `configs/local.yaml` (git-ignored) and point it at your copy of NIH ChestX-ray14 (images folder, `Data_Entry_2017_v2020.csv`, `train_val_list.txt`, `test_list.txt`). `outputs/splits.csv` stores image file names only; the full path is built from `images_dir` at run time (`data_paths.read_splits()`). The `chain_*.sh` launchers use `python` from your PATH; set `PY=/path/to/python` to override.
 Settings are environment variables, so the original 224 px runs keep their file names.
 
 ## 1. Data and caches (Git Bash syntax; the chain_*.sh scripts show the same variables)

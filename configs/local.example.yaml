@@ -1,0 +1,7 @@
+# Copy to configs/local.yaml (git-ignored) and point it at where the NIH ChestX-ray14 files are on
+# THIS machine. Only the keys you list override configs/default.yaml.
+data:
+  metadata_csv: /path/to/Data_Entry_2017_v2020.csv
+  images_dir: /path/to/ChestXray14/images
+  train_val_list: /path/to/train_val_list.txt
+  test_list: /path/to/test_list.txt

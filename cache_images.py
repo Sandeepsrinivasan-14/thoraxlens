@@ -15,6 +15,7 @@ import pandas as pd
 from PIL import Image
 
 from common import CACHE_PATH, IMG, OUTPUTS, load_config
+from data_paths import read_splits
 
 
 
@@ -26,7 +27,7 @@ def load(path, size):
 def main():
     cfg = load_config()
     SIZE = IMG
-    df = pd.read_csv(OUTPUTS / "splits.csv")
+    df = read_splits()
     n = len(df)
     print(f"caching {n} images at {SIZE}x{SIZE} -> {CACHE_PATH}")
 
